@@ -1,7 +1,7 @@
 package com.perfect.microservices.customer.controller;
 
-import com.perfect.microservices.customer.CustomerService;
 import com.perfect.microservices.customer.input.CustomerRegistrationRequest;
+import com.perfect.microservices.customer.service.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
