@@ -5,6 +5,9 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>customer</module>
+		<module>payment</module>
+		<module>service-registry</module>
+		<module>api-gateway</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -20,6 +23,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<spring.boot.dependencies.version>2.6.2</spring.boot.dependencies.version>
+		<spring-cloud.version>2021.0.0</spring-cloud.version>
 	</properties>
 
 	<dependencies>
@@ -42,6 +46,17 @@
 				<version>${spring.boot.dependencies.version}</version>
 				<scope>import</scope>
 				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-openfeign</artifactId>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

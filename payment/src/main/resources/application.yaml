@@ -1,12 +1,12 @@
 server:
-  port: 8090
+  port: 8091
 
 spring:
   application:
-    name: customer
+    name: payment
   datasource:
     password: password
-    url: jdbc:postgresql://localhost:5432/customer
+    url: jdbc:postgresql://localhost:5432/payment
     username: rfperfect
   jpa:
     hibernate:
