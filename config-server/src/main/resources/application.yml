@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/erchauhannitin/ms-config-server
+          skipSslValidation: true
+          timeout: 4
+  application:
+    name: config-server
+
+server:
+  port: 8888
