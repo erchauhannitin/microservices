@@ -8,6 +8,7 @@
 		<module>payment</module>
 		<module>service-registry</module>
 		<module>api-gateway</module>
+		<module>config-server</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>

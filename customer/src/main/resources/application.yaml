@@ -27,3 +27,11 @@ eureka:
     register-with-eureka: true
   instance:
     preferIpAddress: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: always
