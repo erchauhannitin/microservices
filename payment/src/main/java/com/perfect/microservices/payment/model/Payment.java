@@ -1,4 +1,4 @@
-package payment.model;
+package com.perfect.microservices.payment.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

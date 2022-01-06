@@ -1,16 +1,17 @@
-package payment.service;
+package com.perfect.microservices.payment.service;
 
+import com.perfect.microservices.payment.model.Payment;
+import com.perfect.microservices.payment.repository.PaymentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import payment.model.Payment;
-import payment.repository.PaymentRepository;
 
 @Service
 @Slf4j
 public class PaymentService {
 
-    @Autowired PaymentRepository paymentRepository;
+    @Autowired
+    PaymentRepository paymentRepository;
 
     public void doPayment(Payment payment) {
 

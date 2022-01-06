@@ -1,7 +1,7 @@
-package payment.repository;
+package com.perfect.microservices.payment.repository;
 
+import com.perfect.microservices.payment.model.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
-import payment.model.Payment;
 
 
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {

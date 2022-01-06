@@ -1,6 +1,6 @@
 package com.perfect.microservices.customer.service;
 
-import com.perfect.microservices.customer.config.CustomerConfig;
+import com.perfect.microservices.customer.client.PaymentClient;
 import com.perfect.microservices.customer.input.CustomerRegistrationRequest;
 import com.perfect.microservices.customer.model.Customer;
 import com.perfect.microservices.customer.model.Payment;
@@ -14,6 +14,7 @@ public class CustomerService {
 
     @Autowired CustomerRepository customerRepository;
     @Autowired RestTemplate restTemplate;
+    @Autowired PaymentClient paymentClient;
 
     public void registerCustomer(CustomerRegistrationRequest registrationRequest) {
 
@@ -28,7 +29,8 @@ public class CustomerService {
                 .id(customer.getId())
                 .amount("100")
                 .build();
-        restTemplate.getForObject("http://localhost:8091/api/payment/dopayment", Payment.class, payment);
+        paymentClient.doPayment(payment);
+        restTemplate.postForObject("http://PAYMENT-SERVICE/api/payment/dopayment", payment, Payment.class);
 
     }
 }
