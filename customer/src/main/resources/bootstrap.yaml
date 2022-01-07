@@ -21,6 +21,9 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 eureka:
   client:

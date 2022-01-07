@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequestMapping("api/customer")
@@ -18,7 +20,7 @@ public class CustomerController {
     @Value("${message: shalom}") private String message;
 
     @PostMapping("register")
-    public void registerCustomer(@RequestBody CustomerRegistrationRequest registrationRequest){
+    public void registerCustomer(@Valid @RequestBody CustomerRegistrationRequest registrationRequest){
         log.info("New Customer registration", registrationRequest);
         customerService.registerCustomer(registrationRequest);
     }
