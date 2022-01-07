@@ -4,10 +4,7 @@ import com.perfect.microservices.payment.model.Payment;
 import com.perfect.microservices.payment.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -22,4 +19,11 @@ public class PaymentController {
         log.info("Payment request", payment);
         paymentService.doPayment(payment);
     }
+
+    @GetMapping("getPaymentDetails/{paymentId}")
+    public Payment getPaymentDetails(@PathVariable("paymentId") String paymentId){
+        log.info("getPaymentDetails request", paymentId);
+        return paymentService.getPaymentDetails(paymentId);
+    }
+
 }
