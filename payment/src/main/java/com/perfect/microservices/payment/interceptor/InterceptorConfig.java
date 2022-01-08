@@ -9,8 +9,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(new GenericInterceptor()).order(1);
-//        registry.addInterceptor(new UrlPatternInterceptor()).addPathPatterns("/filter-check/**").order(2);
+        registry.addInterceptor(new GenericInterceptor()).order(2);
+        registry.addInterceptor(new UrlPatternInterceptor()).addPathPatterns("/api/**").order(1);
     }
 
 }

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UrlPatternInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("Url Pattern Interceptor preHandle");
+        log.info("Url Pattern Interceptor preHandle  URI {} and session Id {}", request.getRequestURL(), request.getRequestedSessionId());
         return true;
     }
 
