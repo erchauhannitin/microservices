@@ -16,14 +16,20 @@ public class PaymentController {
 
     @PostMapping("dopayment")
     public void doPayment(@RequestBody Payment payment){
-        log.info("Payment request", payment);
+        log.info("Payment request {}", payment);
         paymentService.doPayment(payment);
     }
 
     @GetMapping("getPaymentDetails/{paymentId}")
     public Payment getPaymentDetails(@PathVariable("paymentId") String paymentId){
-        log.info("getPaymentDetails request", paymentId);
+        log.info("getPaymentDetails request {}", paymentId);
         return paymentService.getPaymentDetails(paymentId);
+    }
+
+    @GetMapping("filter-check")
+    public String filterCheck(){
+        log.info("Filter Check request");
+        return "Filter check";
     }
 
 }
