@@ -28,6 +28,8 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+    depends_on:
+      - postgres
 
   zipkin:
     image: openzipkin/zipkin
@@ -36,6 +38,8 @@ services:
       - "9411:9411"
     networks:
       - spring
+    depends_on:
+      - postgres
 
   prometheus:
     image: prom/prometheus:v2.32.1
@@ -45,6 +49,9 @@ services:
       - ./prometheus:/etc/prometheus
       - prometheus-data:/prometheus
     command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yaml
+    depends_on:
+      - zipkin
+      - postgres
 
   grafana:
     image: grafana/grafana:8.3.3
@@ -63,6 +70,10 @@ services:
       - monitor-net
     labels:
       org.label-schema.group: "monitoring"
+    depends_on:
+      - zipkin
+      - prometheus
+      - postgres
 
 networks:
   postgres:
