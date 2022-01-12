@@ -15,9 +15,9 @@ logging:
   level:
     com.perfect: INFO
 
-#server:
-#  ssl:
-#    key-alias: ms-secure
-#    key-store-type: JKS
-#    key-password:
-#    key-store:
+server:
+  ssl:
+    key-alias: ms-secure
+    key-store-type: JKS
+    key-password: ms-secure
+    key-store: classpath:ms-secure.jks
