@@ -7,10 +7,14 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: customer
-          uri: lb://CUSTOMER
+        - id: customer-service
+          uri: lb://CUSTOMER-SERVICE
           predicates:
             - Path=/api/customer/**
+        - id: customer-service
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/api/payment/**
   zipkin:
     base-url: http://localhost:9411
 
@@ -18,3 +22,7 @@ eureka:
   client:
     fetch-registry: true
     register-with-eureka: true
+
+logging:
+  level:
+    com.perfect: TRACE
