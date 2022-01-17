@@ -21,7 +21,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-        auth.userDetailsService(userDetailsService);
+//        auth.userDetailsService(userDetailsService);
 //        auth.jdbcAuthentication().dataSource(dataSource);
 
         auth.inMemoryAuthentication()
@@ -32,8 +32,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .withUser("ms")
                 .password("ms")
                 .roles("ADMIN");
-
-        auth.userDetailsService(userDetailsService);
+        
+//        auth.userDetailsService(userDetailsService);
     }
 
     @Bean
@@ -45,7 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/swagger-ui").permitAll()
                 .antMatchers("/payment").hasRole("ADMIN")
                 .antMatchers("/api").hasAnyRole("USER", "ADMIN")
                 .and().formLogin();

@@ -23,10 +23,10 @@ spring:
       matching-strategy: ant_path_matcher
   profiles:
     active: test
-#  security:
-#    user:
-#      name: perfect
-#      password: perfect
+  security:
+    user:
+      name: perfect
+      password: perfect
 
 eureka:
   client:
@@ -38,3 +38,4 @@ eureka:
 logging:
   level:
     com.perfect: TRACE
+    com.netflix.hystrix: DEBUG

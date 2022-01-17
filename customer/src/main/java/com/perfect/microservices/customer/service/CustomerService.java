@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @Slf4j
@@ -18,6 +19,7 @@ public class CustomerService {
     @Autowired CustomerRepository customerRepository;
     @Autowired RestTemplate restTemplate;
     @Autowired PaymentClient paymentClient;
+    @Autowired WebClient webClientBuilder;
 
     @HystrixCommand(groupKey = "microservices", commandKey = "payment", fallbackMethod = "paymentFallBack")
     public String registerCustomer(CustomerRegistrationRequest registrationRequest) {
@@ -33,8 +35,17 @@ public class CustomerService {
                 .id(customer.getId())
                 .amount("100")
                 .build();
+
         paymentClient.doPayment(payment);
-        restTemplate.postForObject("http://PAYMENT-SERVICE/api/payment/dopayment", payment, Payment.class);
+
+        restTemplate.postForObject("dopayment", payment, Payment.class);
+
+        webClientBuilder
+                .post()
+                .uri("dopayment")
+                .bodyValue(payment)
+                .retrieve()
+                .bodyToMono(Payment.class);
 
         return customer.getFirstName();
     }

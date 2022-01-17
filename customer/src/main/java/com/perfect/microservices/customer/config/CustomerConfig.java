@@ -4,6 +4,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class CustomerConfig {
@@ -12,6 +13,13 @@ public class CustomerConfig {
     @LoadBalanced
     public RestTemplate restTemplate(){
         return new RestTemplate();
+    }
+
+    @Bean
+    public WebClient getPaymentWebClientBuidler(){
+        return WebClient.builder()
+                .baseUrl("https://PAYMENT-SERVICE/api/payment/")
+                .build();
     }
 
 }
