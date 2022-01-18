@@ -11,6 +11,7 @@ import com.perfect.microservices.customer.model.Payment;
 import com.perfect.microservices.customer.repository.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -28,7 +29,8 @@ public class CustomerService {
     @Autowired RestTemplate restTemplate;
     @Autowired PaymentClient paymentClient;
     @Autowired NotificationClient notificationClient;
-    @Autowired WebClient webClient;
+    @Autowired @Qualifier("PaymentWebClient") WebClient webClient;
+    @Autowired @Qualifier("NotificationWebClient") WebClient notificationWebClient;
     @Autowired ClientTypeSettings settings;
 
     @HystrixCommand(groupKey = "microservices", commandKey = "payment", fallbackMethod = "paymentFallBack")

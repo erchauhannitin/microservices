@@ -1,6 +1,7 @@
 package com.perfect.microservices.customer.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ public class CustomerConfig {
     }
 
     @Bean
+    @Qualifier("PaymentWebClient")
     public WebClient getPaymentWebClient(){
         return WebClient.builder()
                 .baseUrl("https://PAYMENT-SERVICE/api/payment/")
@@ -27,6 +29,15 @@ public class CustomerConfig {
                 .filter(logRequest())
                 .build();
     }
+
+    @Bean
+    @Qualifier("NotificationWebClient")
+    public WebClient getNotificationWebClient(){
+        return WebClient.builder()
+                .baseUrl("https://NOTIFICATION-SERVICE/api/notification/")
+                .build();
+    }
+
 
     private ExchangeFilterFunction logRequest(){
 
