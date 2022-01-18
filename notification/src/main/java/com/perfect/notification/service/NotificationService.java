@@ -11,7 +11,6 @@ public class NotificationService {
     @Autowired NotificationRepository notificationRepository;
 
     public void sendEmail(SmsNotification notification) {
-
         notificationRepository.save(notification);
     }
 

@@ -12,8 +12,10 @@ import com.perfect.microservices.customer.repository.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -32,8 +34,10 @@ public class CustomerService {
     @Autowired @Qualifier("PaymentWebClient") WebClient webClient;
     @Autowired @Qualifier("NotificationWebClient") WebClient notificationWebClient;
     @Autowired ClientTypeSettings settings;
+    @Value("${payment.service.url}")
+    private String paymentUrl;
 
-    @HystrixCommand(groupKey = "microservices", commandKey = "payment", fallbackMethod = "paymentFallBack")
+    @Transactional
     public String registerCustomer(CustomerRegistrationRequest registrationRequest) {
 
         Customer customer = Customer.builder()
@@ -44,36 +48,48 @@ public class CustomerService {
 
         customerRepository.saveAndFlush(customer);
 
-        log.info("Notification service called, sendEmail {}", customer.getId());
-        notificationClient.sendEmail(customer.getId());
+        final Integer customerId = customer.getId();
+        sendNotification(customerId);
 
         Payment payment = Payment.builder()
-                .id(customer.getId())
+                .id(customerId)
                 .amount("100")
                 .build();
 
-        log.info("Feign client is {}", settings.isFeignClient());
-        paymentClient.doPayment(payment);
-
-        log.info("RestTemplate client is {}", settings.isRestTemplate());
-        restTemplate.postForObject("dopayment", payment, Payment.class);
-
-        log.info("Web client is {}", settings.isWebClient());
-        webClient
-                .post()
-                .uri("dopayment")
-                .bodyValue(payment)
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new CustomerNotFoundException("Customer not found")))
-                .bodyToMono(Payment.class)
-                .subscribe();
+        sendPayment(payment);
 
         return customer.getFirstName();
     }
 
-    public String paymentFallBack(CustomerRegistrationRequest registrationRequest){
-        log.info("Payment Fallback called");
-        return "Payment Service not available";
+    @HystrixCommand(groupKey = "microservices", commandKey = "payment", fallbackMethod = "sendPaymentFallBack")
+    private void sendPayment(Payment payment) {
+        log.info("Feign client is {}", settings.isFeignClient());
+        if(settings.isFeignClient()) {
+            paymentClient.doPayment(payment);
+        }
+
+        log.info("RestTemplate client is {}", settings.isRestTemplate());
+        if(settings.isRestTemplate()) {
+            restTemplate.postForObject(paymentUrl +"/dopayment", payment, Payment.class);
+        }
+
+        log.info("Web client is {}", settings.isWebClient());
+        if(settings.isWebClient()) {
+            webClient
+                    .post()
+                    .uri(paymentUrl + "/dopayment")
+                    .bodyValue(payment)
+                    .retrieve()
+                    .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new CustomerNotFoundException("Customer not found")))
+                    .bodyToMono(Payment.class)
+                    .subscribe();
+        }
+    }
+
+    @HystrixCommand(groupKey = "microservices", commandKey = "notification", fallbackMethod = "sendNotificationFallBack")
+    private void sendNotification(Integer customerId) {
+        log.info("Notification service called, sendEmail {}", customerId);
+        notificationClient.sendEmail(customerId);
     }
 
     public Optional<Customer> getCustomerById(String id){
@@ -84,4 +100,13 @@ public class CustomerService {
         return customerRepository.getMatchingCustomers(name);
     }
 
+    public String sendNotificationFallBack(Integer customerId){
+        log.info("sendNotification Fallback called {}", customerId);
+        return "sendNotification Service not available";
+    }
+
+    public String sendPaymentFallBack(Payment payment){
+        log.info("sendPayment Fallback called {}", payment);
+        return "sendPayment Service not available";
+    }
 }

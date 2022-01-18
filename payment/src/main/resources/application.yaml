@@ -38,4 +38,3 @@ eureka:
 logging:
   level:
     com.perfect: TRACE
-    com.netflix.hystrix: DEBUG
