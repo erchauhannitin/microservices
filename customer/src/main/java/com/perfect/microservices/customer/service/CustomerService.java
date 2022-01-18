@@ -1,7 +1,9 @@
 package com.perfect.microservices.customer.service;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.perfect.microservices.customer.client.NotificationClient;
 import com.perfect.microservices.customer.client.PaymentClient;
+import com.perfect.microservices.customer.config.ClientTypeSettings;
 import com.perfect.microservices.customer.exception.CustomerNotFoundException;
 import com.perfect.microservices.customer.input.CustomerRegistrationRequest;
 import com.perfect.microservices.customer.model.Customer;
@@ -25,7 +27,9 @@ public class CustomerService {
     @Autowired CustomerRepository customerRepository;
     @Autowired RestTemplate restTemplate;
     @Autowired PaymentClient paymentClient;
+    @Autowired NotificationClient notificationClient;
     @Autowired WebClient webClient;
+    @Autowired ClientTypeSettings settings;
 
     @HystrixCommand(groupKey = "microservices", commandKey = "payment", fallbackMethod = "paymentFallBack")
     public String registerCustomer(CustomerRegistrationRequest registrationRequest) {
@@ -37,15 +41,22 @@ public class CustomerService {
                 .build();
 
         customerRepository.saveAndFlush(customer);
+
+        log.info("Notification service called, sendEmail {}", customer.getId());
+        notificationClient.sendEmail(customer.getId());
+
         Payment payment = Payment.builder()
                 .id(customer.getId())
                 .amount("100")
                 .build();
 
+        log.info("Feign client is {}", settings.isFeignClient());
         paymentClient.doPayment(payment);
 
+        log.info("RestTemplate client is {}", settings.isRestTemplate());
         restTemplate.postForObject("dopayment", payment, Payment.class);
 
+        log.info("Web client is {}", settings.isWebClient());
         webClient
                 .post()
                 .uri("dopayment")
