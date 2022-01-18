@@ -1,5 +1,6 @@
 package com.perfect.notification.controller;
 
+import com.perfect.notification.model.SmsNotification;
 import com.perfect.notification.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,10 @@ public class NotificationController {
 
     @GetMapping("email/{id}")
     public void sendEmail(@Valid @PathVariable String id){
-
         log.info("Sending email for customer {}", id);
+        final SmsNotification notification = new SmsNotification();
+        notification.setCustomerId(Integer.parseInt(id));
+        notificationService.sendEmail(notification);
 
     }
 }
