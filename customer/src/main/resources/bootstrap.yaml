@@ -49,3 +49,8 @@ payment:
     url: http://localhost:8091
 
 message: "sababa"
+
+logging:
+  level:
+    com.perfect: TRACE
+    com.netflix.hystrix: DEBUG
