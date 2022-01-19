@@ -26,7 +26,7 @@ spring:
   security:
     user:
       name: perfect
-      password: perfect
+      password: ms-secure
 
 eureka:
   client:

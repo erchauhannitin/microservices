@@ -5,7 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-@Table
+@Table(name = "CA_USER")
 @Entity
 @Data
 public class CaUser {
@@ -15,7 +15,7 @@ public class CaUser {
     private int id;
     private String userName;
     private String password;
-    private String active;
+    private boolean active;
     private String roles;
 
 }

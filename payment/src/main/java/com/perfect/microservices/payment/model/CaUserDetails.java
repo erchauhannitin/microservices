@@ -13,13 +13,13 @@ public class CaUserDetails implements UserDetails {
 
     private String userName;
     private String password;
-    private String active;
+    private boolean active;
     private List<GrantedAuthority> authorities;
 
     public CaUserDetails(CaUser user){
         this.userName = user.getUserName();
         this.password = user.getPassword();
-        this.active = user.getActive();
+        this.active = user.isActive();
         this.authorities = Arrays.stream(user.getRoles().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
@@ -42,21 +42,21 @@ public class CaUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return active;
     }
 }

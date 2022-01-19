@@ -1,5 +1,6 @@
 package com.perfect.microservices.payment.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,30 +11,16 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.sql.DataSource;
-
 @EnableWebSecurity
+@Slf4j
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired UserDetailsService userDetailsService;
-    @Autowired DataSource dataSource;
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-//        auth.userDetailsService(userDetailsService);
-//        auth.jdbcAuthentication().dataSource(dataSource);
-
-        auth.inMemoryAuthentication()
-                .withUser("perfect")
-                .password("perfect")
-                .roles("USER")
-                .and()
-                .withUser("ms")
-                .password("ms")
-                .roles("ADMIN");
-        
-//        auth.userDetailsService(userDetailsService);
+      log.info("SecurityConfiguration::AuthenticationManagerBuilder.configure called");
+      auth.userDetailsService(userDetailsService);
     }
 
     @Bean
@@ -43,11 +30,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        log.info("SecurityConfiguration::HttpSecurity.configure called");
 
-        http.authorizeRequests()
+        http.csrf().disable()
+                .authorizeRequests()
                 .antMatchers("/swagger-ui").permitAll()
-                .antMatchers("/payment").hasRole("ADMIN")
-                .antMatchers("/api").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/payment").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/api").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .and().formLogin();
     }
 }
