@@ -13,6 +13,8 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+    depends_on:
+      - pgadmin
 
   pgadmin:
     container_name: pgadmin
@@ -28,8 +30,6 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-    depends_on:
-      - postgres
 
   zipkin:
     image: openzipkin/zipkin
