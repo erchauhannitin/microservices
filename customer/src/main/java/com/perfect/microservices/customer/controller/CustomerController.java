@@ -8,11 +8,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Slf4j
 @RestController
@@ -37,9 +42,14 @@ public class CustomerController {
     }
 
     @GetMapping("{id}")
-    public Customer getCustomerById(@Valid @PathVariable String id){
+    public ResponseEntity<Customer> getCustomerById(@Valid @PathVariable String id){
         log.info("getCustomerById {}", id);
-        return customerService.getCustomerById(id).orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+        final Optional<Customer> customer = customerService.getCustomerById(id);
+        if(!customer.isPresent()){
+            throw new CustomerNotFoundException("Customer not found");
+        }
+        customer.get().add(linkTo(methodOn(CustomerService.class).getMatchingCustomers(id)).withSelfRel());
+        return ResponseEntity.ok(customer.get());
     }
 
     @GetMapping("search/{name}")

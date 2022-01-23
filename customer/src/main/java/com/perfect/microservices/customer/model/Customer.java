@@ -1,18 +1,17 @@
 package com.perfect.microservices.customer.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Customer {
+public class Customer  extends RepresentationModel<Customer> {
 
     @Id
     @SequenceGenerator(name = "customer_id_sequence",
@@ -23,5 +22,12 @@ public class Customer {
     private String firstName;
     private String lastName;
     private String email;
+
+    public Customer(Integer id, String firstName, String lastName, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
 
 }
