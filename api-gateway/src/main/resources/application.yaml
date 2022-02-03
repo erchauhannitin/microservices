@@ -11,7 +11,7 @@ spring:
           uri: lb://CUSTOMER-SERVICE
           predicates:
             - Path=/api/customer/**
-        - id: customer-service
+        - id: payment-service
           uri: lb://PAYMENT-SERVICE
           predicates:
             - Path=/api/payment/**
