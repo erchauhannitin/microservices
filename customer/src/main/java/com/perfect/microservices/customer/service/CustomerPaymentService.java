@@ -1,6 +1,7 @@
 package com.perfect.microservices.customer.service;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.perfect.microservices.customer.aop.advice.ExecutionTime;
 import com.perfect.microservices.customer.client.PaymentClient;
 import com.perfect.microservices.customer.config.ClientTypeSettings;
 import com.perfect.microservices.customer.exception.CustomerNotFoundException;
@@ -35,6 +36,7 @@ public class CustomerPaymentService {
     @Value("${spring.security.user.password}")
     private String password;
 
+    @ExecutionTime
     @HystrixCommand(groupKey = "microservices", commandKey = "payment", fallbackMethod = "sendPaymentFallBack")
     public String sendPayment(Payment payment) {
         log.info("Feign client is {}", settings.isFeignClient());
